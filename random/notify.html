@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <script type="text/javascript">
+      var queryString = location.search;
+      var tMatch = queryString.match(/(\?|&)t=(\d+)/);
+      var mMatch = queryString.match(/(\?|&)m=([^&]+)/);
+      var t = (tMatch && tMatch[1] && Number(tMatch[2])) || 1800;
+      var m = (mMatch && mMatch[1] && mMatch[2]) || '.';
+      Notification.requestPermission().then(window.setTimeout(function() {
+        var displayNotification = function() {
+          var n = new Notification(m, {
+            requireInteraction: true,
+            noscreen: true
+          });
+          
+          var reset = function(event) {
+            event.preventDefault();
+            n.close();
+            setTimeout(displayNotification, t * 1000);
+          };
+          
+          n.onclick = n.close.bind(n);
+          n.addEventListener('close', reset);
+        }
+        displayNotification();
+      }, t * 1000));
+    </script>
+  </head>
+  <body></body>
+</html>
